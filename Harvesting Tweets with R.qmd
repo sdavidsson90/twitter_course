@@ -22,7 +22,7 @@ vignette("academictwitteR-auth")
 
 1.  **Acquire a an account that allows you to access the Twitter API \[...\]**
 
-1.  **Store your credentials on your local computer**
+2.  **Store your credentials on your local computer**
 
 When you have acquired the token you have to set your credentials, so that Twitter knows, that it's actually someone, who has permission, that's making the call.
 
