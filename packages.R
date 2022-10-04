@@ -1,7 +1,7 @@
 # If you have cloned this project from github, you should have noticed that we
 # are using renv. This means that the packages should all come preinstalled
-# in with this project. In that case you should not have to run this 
-# script. This is mainly for documentation purposes (and future 
+# in with this project. In that case you should not have to run this  script.
+# This is mainly for documentation purposes (and future 
 # troubleshooting).
 
 # The normal method to install packages is:
