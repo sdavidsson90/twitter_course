@@ -1,0 +1,292 @@
+---
+title: "Hands on with Harvesting Tweets with R (academictwitteR)"
+author: "Sighvatur Sveinn Davidsson"
+format: html
+editor: visual
+---
+
+## \[1\] Before we get started
+
+**Why are we here? Why should we care about harvesting tweets?**
+
+\[...\]
+
+What is twitter even? Microblogging, how many tweets a month.
+
+**What kind of research has been done using data from Twitter?**
+
+We present some use cases of Twitter data, ie. how other researches have benefitted from it. Emphasis is on demonstrating a broad range of topics and methods. This is supposed to be an inspiration for the participants own research.
+
+**A brief introduction to the API concept.**
+
+\[...\]
+
+API's are a commonly used tool for allowing users to gather data from a database. Like a store clerk, the API goes into the database and collects the data you requested. The API checks your identity, sees if what you asked for makes sense, and then delivers it to you.
+
+![](images/Screenshot%20from%202022-10-05%2012-26-52.png){width="475"}
+
+**Acquire a an account that allows you to access the Twitter API**
+
+\[...\]
+
+**How to store your credentials on your local computer**
+
+When you have acquired the bearer token, you would have to store it inside your local R-environment, so that it get's carried over when you make your queries. This is Twitter's way of knowing that it's actually someone with permission, who is making the call.
+
+To do this we will be configuring our process:
+
+```{r}
+# This package loads functions necessary for communicating with the Twitter API
+library(academictwitteR) 
+
+# We can now access the following function, that helps us to set the bearer token.
+set_bearer()
+```
+
+This function opens up a user configuration file called *.Renviron*. In this file we store our credentials in a manner like this:
+
+```{bash}
+TWITTER_BEARER=AAAAAAAAAAAAAAAAAAAAAPxAggEAAAAA07AUylWiirV1P7y4$E6P*%KkrWdNAzuM4Sah6N9wF5y^5JoTY2&%CA%9dikVUDJiwPE4ATSBgQZojlYn
+```
+
+When you have done this, save the file and restart your r-session. In the menu bar find: **Session -\> Restart R**
+
+Now RStudio should be loaded with your personal token, and you should be ready to start collecting tweets.
+
+**Tips**:
+
+-   The token should be posted on the same line as the variable being defined ("TWITTER_BEARER") and there should be no spaces.
+
+-   If you want to read more about the `set_bearer()` function (or any other function), put a question mark in front of it and read the documentation for it. Like so `?set_bearer()`
+
+-   To see the official authentication guide execute this command in your console: `vignette("academictwitteR-auth")`
+
+-   For experienced R users: Note that the `set_bearer()` takes no input, but behaves in the same way as `usethis::edit_r_environ()`. It simply opens the file, for you to manually paste the token.
+
+## \[2\] Harvesting tweets
+
+Before you get started, you should remember to load the library before you can access function. This only has to be done once for each session.
+
+```{r}
+library(academictwitteR)
+```
+
+Let's start with the workhorse function. The following function will collect all tweets in a specified timeinterval based on your search term.
+
+The basic syntax looks like this:
+
+```{r}
+aalborg_tweets <- get_all_tweets(
+  query = "aalborg",
+  start_tweets = "2020-12-31T00:00:00Z",
+  end_tweets = "2021-01-01T23:59:59Z"
+)
+```
+
+Here's how to read the code:
+
+-   We call the function `get_all_tweets()` and we assign the output of it to an object we choose to call `aalborg_tweets`. Assigning always happens to the left - as indicated by the arrow-operator (`<-`).
+
+-   Notice that the parenthesis of the function wrap around a series of arguments. The parenthesis define the beginning and the end of the function.
+
+-   This function has three mandatory arguments, that have to be supplied for it to work.
+
+    -   `query`: This is your actual search term.
+
+    -   `start_tweets`: the starting date and time of your search.
+
+    -   `end_tweets`: the ending date and time of your search.
+
+Remember - as an academic rsearcher you have been given a very generous tool, but there are some limitations for your requests. The most important one is that you can gather 10 million tweets monthly. It's entirely possible to use all of them in just a few calls, with broad enough search term, and a number of tweets that is too high. But you're in good hands. There's a default of 100 tweets, written into the function.
+
+**Extra**:
+
+-   The order of the arguments doesn't matter. What matters is:
+
+    -   The arguments should be spelled correctly.
+
+    -   The arguments should be separated by commas.
+
+    -   The input to the argument should be spelled correctly. This can make a difference for how an argument input is formatted (and thus read by the function).
+
+-   Functions are always written as `function()`. If they don't have paranthesis, it's an object. Not a function. Functions consist of default and/or mandatory arguments.
+
+-   Most of the time functions will have series of default arguments, that are applied to your function. Look into this by typing, eg. `?function()`.
+
+-   When you call the function a call is sent to the Twitter API, with the input parameters you provided. This returns a JSON-file that is converted into a tabular format, that is more R-friendly.
+
+### The output
+
+Use the following function to look at your variables.
+
+```{r}
+# Load the tidyverse package bundle. 
+library(tidyverse)
+
+# Use the glimpse function to look at the variables. 
+glimpse(aalborg_tweets)
+```
+
+Here's a quick tour of the output variables. The official documentation can be found [here](https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet). Not only does it describe the variables included - there are also suggestions for analytical uses.
+
+-   **created_at**: the time the tweet was posted.
+
+-   **in_reply_to_user_id**: if the represented tweet is a reply, this will be the id of the user being replied to.
+
+-   **text**: the actual text
+
+-   **public_metric**: a dataframe within the dataframe; holds metrics *retweet_count, reply_count, like_count, quote_count.* This is useful for measuring tweet engagement.
+
+-   **edit_history_tweets_ids**:
+
+-   **id**: the unique identifier of this tweet
+
+-   **author_id**: the unique identifier of the tweet's author
+
+-   **conversation_id**: if the tweet is a part of a conversation, this will be the id of the original tweet.
+
+-   **lang**: language registered by twitter bots. Returned in a BCP47 format.
+
+-   **entitites**:
+
+-   **possibly_sensitive**: marked either by user or twitter agent as containing sensitive information.
+
+-   **referenced_tweets**: a list of tweets being referenced (if tweet is reply or retweet
+
+-   **source**: what application the tweet is generated from.
+
+-   **attachements**:
+
+-   **geo**: geographic location information. **\[see note ...\]**
+
+**Tips:**
+
+-   Other ways to look at your dataset:
+
+    -   Print it in your console:
+
+        -   Higlight it and press ctrl+enter
+
+        -   functions: `glimpse()`, `str()`, `head()`, `tail()`, `print()`
+
+    -   "View" dataset. This will open it on top of your script, but switch back by finding the correct tab.
+
+        -   Hold down ctrl and click somewhere in your script where it's written.
+
+        -   Find it in the environment pane and click it
+
+### **Tools for working with the output**
+
+Now that you have your data, you can actually start doing some analysis. As you have probably noticed the output is structured in a tabular format. This allows us to manipulate it systematically. Arguably the most important package of the r-language is dplyr.
+
+This comes bundled in the tidyverse-package we loaded earlier, but can of course be loaded by itself: `library(dplyr)`. The [dplyr-cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf) is very useful for learning these functions (and looking at while thinking).
+
+-   select(): selects specified columns from your dataset (only those). Useful for extracting only certain columns and dropping others.
+
+-   filter(): is a row equivalent to select. You tell it to look at the cell content of a certain column, and only keep rows that match a specified condition.
+
+-   mutate(): apply any kind of transformation to the cell content of a specified column.
+
+### Some quick analysis:
+
+Here I counted the number of occurances for the languages in my dataset.
+
+```{r}
+# What do we have to work with?
+glimpse(aalborg_tweets)
+
+# Let's count the languages
+lang_tweets <- aalborg_tweets %>% count(lang, sort = TRUE)
+
+# Let's plot the language count
+ggplot(lang_tweets) + geom_col(aes(x = lang, y = n))
+
+```
+
+Here I decided on a method for deciding on the most popular tweet in the period. Try to see if you can decipher how I did.
+
+```{r}
+# Let's find the most popular tweet
+# This one is inside a nested dataframe in the public_metrics. We'll unnest that first.
+aalborg_tweets %>% 
+  unnest(public_metrics) %>% 
+  glimpse()
+
+# Notice the difference from before
+glimpse(aalborg_tweets)
+
+# Let's pick out the ones
+selected_tweets <- 
+aalborg_tweets %>% 
+  unnest(public_metrics) %>% 
+  select(text, retweet_count, reply_count, like_count, quote_count)
+
+# Let's look at what we have
+selected_tweets 
+
+# Gather the numeric values & sort by most popular
+most_popular_tweets <-
+selected_tweets %>% 
+  rowwise() %>% 
+  transmute(text, popularity = sum(retweet_count, reply_count, like_count, quote_count)) %>% 
+  arrange(-popularity)
+
+most_popular_tweets
+```
+
+Kristoffer eksempler \[...\]
+
+### **Extending the function**
+
+```{r}
+aalborg_tweets <- get_all_tweets(
+  query = "aalborg",
+  start_tweets = "2020-01-01T00:00:00Z",
+  end_tweets = "2020-12-31T23:59:59Z"
+)
+```
+
+### Geotags:
+
+*Prevalence:* \~1-2% of Tweets are geo-tagged \[[Source](https://developer.twitter.com/en/docs/tutorials/advanced-filtering-for-geo-data)\]
+
+*Prevalence:* \~30-40% of Tweets contain some profile location information. \[[Source](https://developer.twitter.com/en/docs/tutorials/advanced-filtering-for-geo-data)\]
+
+```{r}
+?build_query()
+```
+
+**Helpers**
+
+\# Dates are formatted as strings (not datetime-format). Don't confuse that.
+
+```{r}
+aalborg_tweets <- get_all_tweets(
+  query = "aalborg",
+  start_tweets = "2020-01-01T00:00:00Z",
+  end_tweets = "2020-12-31T23:59:59Z"
+)
+```
+
+We could introduce variables to make our function easier to work with. This is a matter of preference, but I think it helps for readability and working with the code. Here we'll assign the strings into
+
+```{r}
+start <- "2020-12-31T23:59:59Z"
+end   <- "2020-12-30T23:59:59Z"
+```
+
+And call the same function, but this time with variables.
+
+```{r}
+aalborg_tweets <- get_all_tweets(
+  query = "aalborg", 
+  start_tweets = start,
+  end_tweets = end
+)
+```
+
+Date conversion
+
+```{r}
+
+```
