@@ -5,17 +5,41 @@ format: html
 editor: visual
 ---
 
-## \[1\] Before we get started
+## \[1\] Before we start
 
-**Why are we here? Why should we care about harvesting tweets?**
+**Why are we here?**
 
-\[...\]
+This is not a course on R. This is first and foremost a course on harvesting tweets and we will be using the R-language as a tool for doing this. During the course you should gain some similarity with the syntax and some familiarity with the RStudio IDE.
 
-What is twitter even? Microblogging, how many tweets a month.
+This text is written for people who don't have much experiencing with programming languages. In spite of the course being very short, we want you to leave the course with a clear idea of *how*.
+
+Is this even possible? Absolutely! Our goal is to present you to the potential of tweet harvesting and to give you code which you can easily modify to get the desired output. We will point at the sections you need to modify. That should be easy.
+
+After you get the data, you will probably want to do some analysis. This part can be a bit more tricky as it inevitably involves learning to think like the programming language. It should however be noted that this is not the emphasis of the course. We will however point at some tools for you to get further with that.
+
+**Tips:**
+
+-   I highly recommend that you take a look at the [R cheatsheets](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf). Print a few of them out. They are very helpful to look at while thinking about a problem.
+
+-   If you want a more proper introduction to the language, I recommend starting out with [R for Data Science](https://r4ds.had.co.nz/) by Hadley Wickham and Garret Grolemund.
+
+-   R is free, open source and has a very supportive online community, where questions to very specific problems are answered by more experienced users. If you encounter problems try phrasing your task and searching for it on Google. Chances are someone else has had that problem.
+
+-   Remember - our job is to help you reach your goals with your research. If you at any point in time encounter problems, don't hesitate to contact us at: claaudia\@aau.dk. We will be happy to help!
+
+**What is twitter - some facts**
+
+Described as a microblogging service.
+
+How many users over the years
+
+How many tweats.
+
+What countries.
 
 **What kind of research has been done using data from Twitter?**
 
-We present some use cases of Twitter data, ie. how other researches have benefitted from it. Emphasis is on demonstrating a broad range of topics and methods. This is supposed to be an inspiration for the participants own research.
+\[We present some use cases of Twitter data, ie. how other researches have benefitted from it. Emphasis is on demonstrating a broad range of topics and methods. This is supposed to be an inspiration for the participants own research.\]
 
 **A brief introduction to the API concept.**
 
